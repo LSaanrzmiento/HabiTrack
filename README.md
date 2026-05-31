@@ -16,7 +16,7 @@ To open this project, open up a virtual environment and flask run
 ## Latest Updates (31/05/2026):
 So far I have just completed the login and registration logic and pages. There is quite some work to do over the week omg.
 
-### 1. Developing dashboard, habit management, and analtics pages
+### 1. Developing dashboard, habit management, and analytics pages
 I still need to do the logic for each page in the website, I think I'll have to do the dashboard and habit management in parallel since it's all about setting up the database and relationships. Which reminds me that I need to do an E-R diagram to figure out the objects and the relationships between them.
 
 The analytics page can come last because thats built on top once the database has been established. Eh, we'll see how this goes over the next couple of days.
