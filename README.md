@@ -7,6 +7,7 @@ Welcome to my first post-Sofware-Workshop2 module project. I practiced a lot of 
 - View a habits dashboard which displays the user's habits, summarising daily, weekly, and monthly progress, and viewing upcoming habits (Querying and filtering)
 - Habit management, users can create, update, and delete habits (CRUD operations)
 - Analyse their progress through an analytics page, this summarises and visualises their performance and compare different habits (This is new to me, wish me luck)
+
 I have also put comments almost everywhere, this is mainly for me because looking back at my notes, I need comments to figure out what the helly I was typing back when I made those notes.
 
 ## Usage
