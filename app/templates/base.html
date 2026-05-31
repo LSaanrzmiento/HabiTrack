@@ -15,6 +15,13 @@
             </ul>
         {% endif %}
     {% endwith %}
+
+    {% if current_user.is_anonymous %}
+        <a href='{{ url_for("login") }}'>Login</a>
+    {% else %}
+        <a href='{{ url_for("logout") }}'>Logout</a>
+    {% endif %}
+
     <main>
         {% block content %}{% endblock %}
     </main>

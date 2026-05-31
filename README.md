@@ -1,0 +1,27 @@
+# HabiTrack
+
+## Description
+Welcome to my first post-Sofware-Workshop2 module project. I practiced a lot of Python and Flask for this module and wanted to try making my own little personal project that covers similar content from the module. This project in partiular is a simple habit tracking website that allows users to:
+- Login and Register using flask_login
+- Create and track personal habits, you can assign each habit a name, description, category, and frequency
+- View a habits dashboard which displays the user's habits, summarising daily, weekly, and monthly progress, and viewing upcoming habits (Querying and filtering)
+- Habit management, users can create, update, and delete habits (CRUD operations)
+- Analyse their progress through an analytics page, this summarises and visualises their performance and compare different habits (This is new to me, wish me luck)
+I have also put comments almost everywhere, this is mainly for me because looking back at my notes, I need comments to figure out what the helly I was typing back when I made those notes.
+
+## Usage
+To open this project, open up a virtual environment and flask run
+
+## Latest Updates (31/05/2026):
+So far I have just completed the login and registration logic and pages. There is quite some work to do over the week omg.
+
+### 1. Developing dashboard, habit management, and analtics pages
+I still need to do the logic for each page in the website, I think I'll have to do the dashboard and habit management in parallel since it's all about setting up the database and relationships. Which reminds me that I need to do an E-R diagram to figure out the objects and the relationships between them.
+
+The analytics page can come last because thats built on top once the database has been established. Eh, we'll see how this goes over the next couple of days.
+
+### 1.1. Working out how to Flask migrate
+This module has taught me how to create_all() and drop_all() but I'll need to learn how to migrate the database because the models.py will probably be going through a lot of versions and at some point it might be better for me to migrate the data instead of restarting it completely every time.
+
+### 2. CSS and Bootstrap
+We actually need to make the website pretty with CSS and Bootstrap. Maybe I'll do this for the dashboard and habit management pages once their logic is done, then figure it out for the analytics. I still need to finalise what kind of analytics and visuals we're putting on that page.
