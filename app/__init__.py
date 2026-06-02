@@ -5,9 +5,12 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 
 app = Flask(__name__)
+app.config.from_object(Config)
+
 login = LoginManager(app)
 login.login_view = 'login'
-app.config.from_object(Config)
+login.login_message = None
+
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
