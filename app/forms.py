@@ -13,8 +13,11 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Sign In')
 
 class RegistrationForm(FlaskForm):
+    first_name = StringField('First Name', validators = [Length(max = 64)])
+    last_name = StringField('Last Name', validators = [Length(max = 64)])
     username = StringField('Username', validators = [DataRequired(), Length(min = 3, max = 20)])
     email = StringField('Email', validators = [DataRequired()])     # Assume fake emails for now
+    phone_number = StringField('Phone Number', validators = [Length(max = 20)])   # Assume fake phone numbers for now
     password = PasswordField('Password', validators = [DataRequired(), Length(min = 8)])
     confirm_password = PasswordField('Confirm Password', validators = [DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')

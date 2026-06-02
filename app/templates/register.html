@@ -8,9 +8,33 @@
     <form method='POST' novalidate>
         {{ form.hidden_tag() }}
         <p>
+        {{ form.first_name.label }}<br>
+        {{ form.first_name }}<br>
+        {% for error in form.first_name.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        </p>
+        
+        <p>
+        {{ form.last_name.label }}<br>
+        {{ form.last_name }}<br>
+        {% for error in form.last_name.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        </p>
+
+        <p>
         {{ form.username.label }}<br>
         {{ form.username }}<br>
         {% for error in form.username.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+        </p>
+
+        <p>
+        {{ form.phone_number.label }}<br>
+        {{ form.phone_number }}<br>
+        {% for error in form.phone_number.errors %}
         <span style="color: red;">{{ error }}</span>
         {% endfor %}
         </p>
