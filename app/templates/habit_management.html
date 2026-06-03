@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+
+{% block title %}Habits - HabiTrack{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="h3 mb-2">Manage Your Habits</h1>
+            <p class="text-muted">Create, edit, or delete your habits.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Create New Habit Form -->
+        <div class="col-lg-5">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h2 class="h5 mb-4">Create New Habit</h2>
+                    <form method="POST" class="row g-3 needs-validation" novalidate id="habitForm">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="form-group col-12">
+                            <label for="inputHabitName" class="form-label fw-semibold">{{ form.name.label.text }}</label>
+                            {{ form.name(id='inputHabitName', class_='form-control', placeholder='Habit name') }}
+                            {% for error in form.name.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="inputDescription" class="form-label fw-semibold">{{ form.description.label.text }}</label>
+                            {{ form.description(id='inputDescription', class_='form-control', placeholder='Brief description', rows='3') }}
+                            {% for error in form.description.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="inputCategory" class="form-label fw-semibold">{{ form.category_id.label.text }}</label>
+                            {{ form.category_id(id='inputCategory', class_='form-control') }}
+                            {% for error in form.category_id.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group col-12">
+                            <label for="inputFrequency" class="form-label fw-semibold">{{ form.frequency_type.label.text }}</label>
+                            {{ form.frequency_type(id='inputFrequency', class_='form-control', onchange='toggleFrequencyFields()') }}
+                            {% for error in form.frequency_type.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Weekly Days -->
+                        <div class="form-group col-12" id="weeklyDaysField" style="display: none;">
+                            <label class="form-label fw-semibold">Days of Week</label>
+                            <div id="weeklyCheckboxes" class="row">
+                                {% set days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] %}
+                                {% for day_index in range(7) %}
+                                    <div class="col-6 col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="weekly_days" value="{{ day_index }}" id="day_{{ day_index }}">
+                                            <label class="form-check-label" for="day_{{ day_index }}">
+                                                {{ days[day_index] }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Monthly Day -->
+                        <div class="form-group col-12" id="monthlyDayField" style="display: none;">
+                            <label for="inputMonthlyDay" class="form-label fw-semibold">{{ form.monthly_day.label.text }}</label>
+                            {{ form.monthly_day(id='inputMonthlyDay', class_='form-control') }}
+                            {% for error in form.monthly_day.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Interval Fields -->
+                        <div class="form-group col-12" id="intervalStartDateField" style="display: none;">
+                            <label for="inputIntervalStartDate" class="form-label fw-semibold">{{ form.interval_start_date.label.text }}</label>
+                            {{ form.interval_start_date(id='inputIntervalStartDate', class_='form-control', type='date') }}
+                            {% for error in form.interval_start_date.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group col-12" id="intervalDaysField" style="display: none;">
+                            <label for="inputIntervalDays" class="form-label fw-semibold">{{ form.interval_days.label.text }}</label>
+                            {{ form.interval_days(id='inputIntervalDays', class_='form-control', type='number', min='1', placeholder='Number of days') }}
+                            {% for error in form.interval_days.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="form-group col-12">
+                            <div class="form-check">
+                                {{ form.active(id='inputActive', class_='form-check-input') }}
+                                <label class="form-check-label" for="inputActive">{{ form.active.label.text }}</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-12">
+                            <div class="d-grid">
+                                {{ form.submit(class_='btn btn-primary') }}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habits List -->
+        <div class="col-lg-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h2 class="h5 mb-4">Your Habits</h2>
+                    {% if habits %}
+                        <div class="list-group">
+                            {% for habit in habits %}
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">{{ habit.name }}</h6>
+                                            {% if habit.description %}
+                                                <p class="mb-1 small text-muted">{{ habit.description }}</p>
+                                            {% endif %}
+                                            <div class="small">
+                                                <span class="badge bg-info text-white">{{ habit.frequency_type }}</span>
+                                                {% if habit.category %}
+                                                    <span class="badge bg-primary text-white">{{ habit.category }}</span>
+                                                {% endif %}
+                                                {% if habit.active %}
+                                                    <span class="badge bg-success text-white">Active</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger text-white">Inactive</span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ url_for('edit_habit', habit_id=habit.id) }}" class="btn btn-outline-warning">Edit</a>
+                                            <form method="POST" action="{{ url_for('delete_habit', habit_id=habit.id) }}" style="display: inline;">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this habit?')">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info text-center">
+                            <p class="mb-0">No habits yet. Create one to get started!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleFrequencyFields() {
+            const frequencyType = document.getElementById('inputFrequency').value;
+            document.getElementById('weeklyDaysField').style.display = 'none';
+            document.getElementById('monthlyDayField').style.display = 'none';
+            document.getElementById('intervalStartDateField').style.display = 'none';
+            document.getElementById('intervalDaysField').style.display = 'none';
+
+            if (frequencyType === 'Weekly') {
+                document.getElementById('weeklyDaysField').style.display = 'block';
+            } else if (frequencyType === 'Monthly') {
+                document.getElementById('monthlyDayField').style.display = 'block';
+            } else if (frequencyType === 'Interval') {
+                document.getElementById('intervalStartDateField').style.display = 'block';
+                document.getElementById('intervalDaysField').style.display = 'block';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleFrequencyFields();
+        });
+    </script>
+{% endblock %}

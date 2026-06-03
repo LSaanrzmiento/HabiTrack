@@ -3,6 +3,138 @@
 {% block title %}Home - HabiTrack{% endblock %}
 
 {% block content %}
-    <h1>Welcome to HabiTrack</h1>
-    <p>Your personal habit tracker!</p>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-2">Welcome to HabiTrack</h1>
+                    <p class="text-muted mb-0">Your personal habit tracker!</p>
+                </div>
+                <a href="{{ url_for('habits') }}" class="btn btn-primary">+ Create Habit</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h5 mb-0">To do {{ 'today' if selected_view == 'today' else 'this week' }}:</h2>
+                <div class="btn-group" role="group" aria-label="View toggle">
+                    <a href="{{ url_for('index', view='today') }}" class="btn btn-sm {% if selected_view == 'today' %}btn-primary{% else %}btn-outline-primary{% endif %}">Today</a>
+                    <a href="{{ url_for('index', view='week') }}" class="btn btn-sm {% if selected_view == 'week' %}btn-primary{% else %}btn-outline-primary{% endif %}">This week</a>
+                </div>
+            </div>
+            {% if selected_view == 'today' %}
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered align-middle mb-0 text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Habit</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Frequency</th>
+                                <th>Completed</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {# iterate over the fixed set of frequencies and show all matching habits #}
+                            {% for freq in ["daily", "weekly", "monthly", "interval"] %}
+                                {% for entry in habit_view[freq] %}
+                                    {% set habit = entry[0] %}
+                                    {% set log = entry[1] %}
+                                    <tr>
+                                        <td>{{ habit.name }}</td>
+                                        <td>{{ habit.description }}</td>
+                                        <td>{{ habit.category }}</td>
+                                        <td>{{ habit.frequency_type }}</td>
+                                        <td>
+                                                {% if log is none %}
+                                                    <form method="POST" action="{{ url_for('toggle_habit_log') }}?view=today">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="habit_id" value="{{ habit.id }}">
+                                                        <input type="hidden" name="log_date" value="{{ today.isoformat() }}">
+                                                        <input type="hidden" name="view" value="today">
+                                                        <button type="submit" class="btn btn-outline-primary btn-sm">Mark</button>
+                                                    </form>
+                                                {% else %}
+                                                    <form method="POST" action="{{ url_for('toggle_habit_log') }}">
+                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                        <input type="hidden" name="habit_id" value="{{ habit.id }}">
+                                                        <input type="hidden" name="log_date" value="{{ log.log_date.isoformat() }}">
+                                                        {% if log.completed %}
+                                                            <button type="submit" class="btn btn-success btn-sm">Completed</button>
+                                                        {% else %}
+                                                            <button type="submit" class="btn btn-outline-danger btn-sm">Mark</button>
+                                                        {% endif %}
+                                                    </form>
+                                                {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            {% if total_due == 0 %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted">No habits due for the selected view.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                {# Week grid: 7 columns for the next 7 days #}
+                <div class="table-responsive">
+                    <table class="table table-bordered align-top mb-0 text-start">
+                        <thead class="table-light">
+                            <tr>
+                                {% for d in week_dates %}
+                                    <th class="text-center">{{ d.strftime('%a %b %d') }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for d in week_dates %}
+                                    <td style="min-width:160px; vertical-align:top;">
+                                        {% if week_grid[d] %}
+                                            <ul class="list-unstyled mb-0">
+                                                {% for habit, freq, log in week_grid[d] %}
+                                                    <li class="mb-2">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <strong>{{ habit.name }}</strong>
+                                                                <div class="small text-muted">{{ habit.category }} · {{ freq }}</div>
+                                                            </div>
+                                                            <div>
+                                                                <form method="POST" action="{{ url_for('toggle_habit_log') }}?view=week">
+                                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                                    <input type="hidden" name="habit_id" value="{{ habit.id }}">
+                                                                    <input type="hidden" name="log_date" value="{{ d.isoformat() }}">
+                                                                    <input type="hidden" name="view" value="week">
+                                                                    {% if log %}
+                                                                        {% if log.completed %}
+                                                                            <button type="submit" class="btn btn-success btn-sm">✓</button>
+                                                                        {% else %}
+                                                                            <button type="submit" class="btn btn-outline-danger btn-sm">Mark</button>
+                                                                        {% endif %}
+                                                                    {% else %}
+                                                                        <button type="submit" class="btn btn-outline-primary btn-sm">Mark</button>
+                                                                    {% endif %}
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        {% else %}
+                                            <div class="text-center text-muted small">—</div>
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

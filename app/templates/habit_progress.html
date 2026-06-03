@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Progress - HabiTrack{% endblock %}
+
+{% block content %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h1 class="h3 mb-2">Your Progress</h1>
+            <p class="text-muted">Track your habit completion rates and achievements.</p>
+        </div>
+    </div>
+
+    {% if habit_stats %}
+        <div class="row">
+            {% for stat in habit_stats %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ stat.habit.name }}</h5>
+                            {% if stat.habit.description %}
+                                <p class="card-text small text-muted">{{ stat.habit.description }}</p>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                <span class="badge bg-info text-white">{{ stat.habit.frequency_type }}</span>
+                                {% if stat.habit.category %}
+                                    <span class="badge bg-primary text-white">{{ stat.habit.category }}</span>
+                                {% endif %}
+                                {% if stat.habit.active %}
+                                    <span class="badge bg-success text-white">Active</span>
+                                {% else %}
+                                    <span class="badge bg-danger text-white">Inactive</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Completion Rate</span>
+                                    <strong>{{ "%.1f"|format(stat.completion_rate) }}%</strong>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ stat.completion_rate }}%;" aria-valuenow="{{ stat.completion_rate }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            <div class="small text-muted">
+                                <p class="mb-1">Completed: <strong>{{ stat.completed }} / {{ stat.total }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <p class="text-muted mb-3">No habits to track yet.</p>
+                <a href="{{ url_for('habits') }}" class="btn btn-primary">Create a Habit</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

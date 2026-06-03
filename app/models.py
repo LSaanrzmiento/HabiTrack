@@ -83,7 +83,7 @@ class Habit(db.Model):
     category_id: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer, sa.ForeignKey('categories.id'), nullable=True)
 
     # For simplicity, we can store the frequency as a string (e.g., "daily", "weekly", "monthly" and "interval").
-    frequency_type: so.Mapped[Optional[str]] = so.mapped_column(sa.String(32), nullable=True)
+    frequency_type: so.Mapped[str] = so.mapped_column(sa.String(32), default='Daily')
     
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
     created_at: so.Mapped[datetime] = so.mapped_column(sa.DateTime, default=datetime.utcnow)
@@ -109,7 +109,7 @@ class Category(db.Model):
     habits: so.Mapped[List['Habit']] = so.relationship('Habit', back_populates='category', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return f'<Category {self.name}>'
+        return f'{self.name}'
 
 
 class HabitSchedule(db.Model):
