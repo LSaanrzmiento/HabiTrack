@@ -13,6 +13,12 @@ This project in overall is a simple habit tracking website that allows users to:
 - Analyse their progress through an analytics page, this summarises and visualises their performance and compare different habits
 
 ## Usage
-To open this project, open up a virtual environment and flask run. 
+To open this project, open up a virtual and install the relevant dependencies:
+- pip install flask
+- pip install flask-wtf
+- pip install flask-sqlalchemy
+- pip install flask-login
+
+Then you can flask run to load up the webpage
 
 You may use the username: "admin" and password: "admin" to see the sample data I used while I was testing if the dashboard was working.
