@@ -31,11 +31,15 @@ def reset_database():
             category1 = Category(name='Health')
             category2 = Category(name='Finance')
             category3 = Category(name='Personal Development')
+            category4 = Category(name='Chores')
+            category5 = Category(name='Work')
+            category6 = Category(name='Other')
         
             # We can also set the relationships after creating the objects (e.g., habit1.category = category3).
             habit1.category = category3
             habit2.category = category1
             habit3.category = category2
+            habit4.category = category4
 
             # For the daily habit, we can set the start date to today and leave the interval_days and day_of_month as None.
             habit1schedule = HabitSchedule(habit=habit1, start_date=datetime.now(timezone.utc).date(), interval_days=None, day_of_month=None)
@@ -53,7 +57,7 @@ def reset_database():
             # For the interval habit, we can set the start date to today and set the interval_days to 3 to show that the habit should be performed every 3 days.
             habit4schedule = HabitSchedule(habit=habit4, start_date=datetime.now(timezone.utc).date(), interval_days=3, day_of_month=None)
 
-            db.session.add_all([user, category1, category2, category3, habit1, habit2, habit3, habit4, habit1schedule, habit2schedule, habit3schedule, habit4schedule, habit2scheduledays1, habit2scheduledays2])
+            db.session.add_all([user, category1, category2, category3, category4, category5, category6, habit1, habit2, habit3, habit4, habit1schedule, habit2schedule, habit3schedule, habit4schedule, habit2scheduledays1, habit2scheduledays2])
 
             db.session.commit()
 
